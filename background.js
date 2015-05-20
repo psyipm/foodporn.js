@@ -30,5 +30,5 @@ chrome.pageAction.onClicked.addListener(function(tab) {
     file: "foodporn.js"
   });
 
-  // alert("Script loaded");
+  chrome.declarativeContent.onPageChanged.removeRules();
 });

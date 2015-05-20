@@ -26,4 +26,4 @@ setTimeout(function() {
 
     checkSum.html(day + "<br>Total: " + sum + ", left: " + (50 - sum));
   });
-}, 1000);
+}, 500);

@@ -1,6 +1,6 @@
 {
   "name": "foodporn.js",
-  "version": "1.0",
+  "version": "0.0.1",
   "description": "calculates the sum of the order for catering",
   "background": {
     "scripts": ["background.js", "jquery.js", "foodporn.js"],
@@ -8,7 +8,7 @@
   },
   "page_action" :
   {
-    "default_icon" : "source_java-4452710940.png",
+    "default_icon" : "icon-18.png",
     "default_title" : "This maybe a catering order form. Click here!"
   },
   "permissions" : [
@@ -16,8 +16,8 @@
     "activeTab"
   ],
   "icons" : {
-    "48" : "source_java-4452711756.png",
-    "128" : "source_java-4452717394.png"
+    "48" : "icon-48.png",
+    "128" : "icon-128.png"
   },
   "manifest_version": 2
 }
