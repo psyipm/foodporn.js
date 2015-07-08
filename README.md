@@ -3,14 +3,14 @@
 
 ### Installation
 
-go to 
+install from chrome web store
+
+```sh
+https://chrome.google.com/webstore/detail/foodpornjs/hibbdocgcnchjkmalhdddiacikhanndd?hl=en-US
+```
+
+or go to 
 ```sh
 chrome://extensions
 ```
 and drag and drop foodporn.js.crx to the page
-
-or clone this repo with
-```sh
-git clone https://github.com/psyipm/foodporn.js.git
-```
-then on the extensions tab check "developer mode" checkbox and click "load unpacked extension"
