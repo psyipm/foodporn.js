@@ -29,6 +29,4 @@ chrome.pageAction.onClicked.addListener(function(tab) {
   chrome.tabs.executeScript(null, {
     file: "foodporn.js"
   });
-
-  chrome.declarativeContent.onPageChanged.removeRules();
 });
