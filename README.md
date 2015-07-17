@@ -1,5 +1,5 @@
 ### Version
-0.0.1
+0.0.3
 
 ### Installation
 
@@ -14,3 +14,9 @@ or go to
 chrome://extensions
 ```
 and drag and drop foodporn.js.crx to the page
+
+### Changes
+
+version 0.0.3
+
+* fixed calculation of float numbers

@@ -16,7 +16,12 @@ setTimeout(function() {
     var day = parent.find(".ss-q-title").text();
     
     parent.find(".ss-choice-item input:checked").each(function(){
-      sum += Number(/\d+$/.exec(this.value)[0]);
+      try {
+        sum += Number(/[\d\,\.]?\d+$/.exec(this.value)[0].replace(',', '.'));
+      }
+      catch(e) {
+        console.log(e.message);
+      }
     });
     
     if (checkSum.length == 0) {
