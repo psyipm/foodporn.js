@@ -8,8 +8,14 @@ setTimeout(function() {
   message.text("Script loaded");
   jQuery('body').append(message)
   message.fadeOut(3000);
+
+  var round = function(value) {
+    return Number(value.toFixed(2));
+  }
   
   jQuery(".ss-form-question .ss-choice-item input").unbind("change").change(function(){
+    var max = 50;
+    var left = max;
     var sum = 0;
     var parent = jQuery(this).parents(".ss-form-question")
     var checkSum = title.find(".checkSum");
@@ -17,7 +23,8 @@ setTimeout(function() {
     
     parent.find(".ss-choice-item input:checked").each(function(){
       try {
-        sum += Number(/[\d\,\.]?\d+$/.exec(this.value)[0].replace(',', '.'));
+        sum += Number(/([\d]*[\,\.]*[\d]*)$/.exec(this.value)[0].replace(',', '.'));
+        left = max - sum;
       }
       catch(e) {
         console.log(e.message);
@@ -25,10 +32,11 @@ setTimeout(function() {
     });
     
     if (checkSum.length == 0) {
-      checkSum = jQuery("<div/>").addClass("checkSum").css("font-size", "20px").css("color", "brown");
+      checkSum = jQuery("<div/>").addClass("checkSum").css("font-size", "20px");
       title.append(checkSum);
     }
 
-    checkSum.html(day + "<br>Total: " + sum + ", left: " + (50 - sum));
+    checkSum.html(day + "<br>Total: " + round(sum) + ", left: " + round(left));
+    checkSum.css("color", (left >= 0) ? "green" : "brown");
   });
 }, 500);
