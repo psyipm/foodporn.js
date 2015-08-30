@@ -1,5 +1,5 @@
 ### Version
-0.0.4
+0.1.0
 
 ### Installation
 
@@ -16,6 +16,12 @@ chrome://extensions
 and drag and drop foodporn.js.crx to the page
 
 ### Changes
+
+version 0.1.0
+
+* show ordered items grouped by day
+* add bootstrap styles
+* add jQuery animations
 
 version 0.0.4
 
