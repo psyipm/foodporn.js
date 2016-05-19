@@ -1,169 +1,124 @@
-setTimeout(function() {
-  var Items = (function () {
+f = function (w) {
+  getPrice = function(element) {
+    r = /\d+((\.|\,)\d+)?/g
+    var title = element.attributes["aria-label"].value
+    _arr = title.match(r)
+    res = parseFloat(_arr[_arr.length-1])
+    return parseFloat(_arr[_arr.length-1] || 0)
+  }
 
-    function Items() {
-      this.items = {}
+  getDaily = function(group) {
+    var daily_cost = 0
+    var title = group.attributes["aria-label"].value
+
+    items = Array.prototype.slice
+      .call(group.querySelectorAll('.freebirdThemedCheckbox[aria-checked="true"]'))
+      .map(function(item) {
+        daily_cost += getPrice(item)
+        return item.attributes["aria-label"].value
+      })
+    return  { title: title, items: items, total: daily_cost }
+  }
+
+  log = function() {
+    res = Array.prototype.slice
+      .call(document.querySelectorAll('[role="group"]'))
+      .map(function(e) { return getDaily(e) }).filter(function(e) { return e.total > 0 })
+      .map(function(day) {
+        return  [day.title, '', day.items, '', ['Total:', day.total].join(' '), ''].join('\n')
+      }).join('*****\n')
+    console.log(res)
+  }
+
+  bindAll = function(func) {
+    Array.prototype.slice
+      .call(document.querySelectorAll('.freebirdFormviewerViewItemsCheckboxChoice'))
+      .map(function(checkbox) {
+        checkbox.addEventListener('click', function(){
+          setTimeout(func, 200)
+        }, false);
+      })
+  }
+
+  buildDay = function(root, data) {
+    var ul
+    var leastcost = 50 - data.total
+    if(data.items) {
+      ul = document.createElement('ul')
+      ul.setAttribute('style', 'margin: 5px 0px; padding: 0 0 0 26px;')
+      data.items.forEach( function(item) {
+        var li = document.createElement('li')
+        li.appendChild(document.createTextNode(item))
+        ul.appendChild(li)
+      })
+    }
+    var title = document.createElement('strong')
+    title.appendChild(document.createTextNode(data.title))
+
+    var total = document.createElement('i')
+    total.setAttribute('style', 'display: block; margin: 0 0 8px 20%;')
+    total.appendChild(document.createTextNode('Total: '))
+    var total_cost = document.createElement('b')
+    total_cost.setAttribute('style', 'font-size: 110%;')
+    total_cost.appendChild(document.createTextNode(data.total.toFixed(2)))
+    total.appendChild(total_cost)
+
+    var day = document.createElement('div')
+    day.appendChild(title)
+    if(ul) { day.appendChild(ul) }
+    day.appendChild(total)
+
+    if (leastcost<0) {
+      day.setAttribute('style', 'background: #F99F9F; padding: 0.5em;')
+      // notify = document.createElement('u')
+      // notify.appendChild(document.createTextNode("Total cost > 50!!! "))
+      // notify.setAttribute('style', 'display: block;')
+      // day.appendChild(notify)
+    } else {
+      day.setAttribute('style', 'background: #FFF; padding: 0.5em;')
+      var notify = document.createElement('i')
+      notify.setAttribute('style', 'font-size: 80%; color: #090; margin-left: 10px;')
+      notify.appendChild(document.createTextNode('(' + leastcost.toFixed(2) + ')'))
+      total_cost.appendChild(notify)
     }
 
-    Items.prototype.getItems = function(day) {
-      if(day == undefined) {
-        return this.items;
-      }
+    root.appendChild(day)
+  }
 
-      return (this.items[day] == undefined) ? { items: [], total: 0 } : this.items[day];
-    };
+  graph = function(root) {
+    Array.prototype.slice
+      .call(root.childNodes)
+      .forEach( function(element, index) {
+        element.remove()
+      })
+    res = Array.prototype.slice
+      .call(document.querySelectorAll('[role="group"]'))
+      .map(function(e) { return getDaily(e) }).filter(function(e) { return e.total > 0 })
+      .forEach( function(day, index) {
+        buildDay(root, day)
+        // return  [day.title, '', day.items, '', ['Total:', day.total].join(' '), ''].join('\n')
+      })
+  }
 
-    Items.prototype.push = function(day, item, total) {
-      var _order = this.getItems(day);
-      _order.total = total;
+  buildScaffold = function() {
+    body = document.getElementsByTagName('body')[0]
+    root_el = document.createElement('span')
+    root_el.setAttribute('style', 'position:fixed;top:0px;right:0;width:300px;background:#FFF;opacity:0.8;')
+    body.appendChild(root_el)
+    return root_el
+  }
 
-      if(_order.items.indexOf(item) == -1) {
-        _order.items.push(item);
-      }
+  res = Array.prototype.slice
+    .call(document.querySelectorAll('[role="group"]'))
+    .map(function(e) { return getDaily(e) }).filter(function(e) { return e.total > 0 })
+    .map(function(day) {
+      return  [day.title, '', day.items, '', ['Total:', day.total].join(' '), ''].join('\n')
+    }).join('*****\n')
 
-      this.items[day] = _order;
-    };
+  var root_el = buildScaffold()
+  bindAll( function() {
+    graph(root_el)
+  })
 
-    Items.prototype.remove = function(day, item, total) {
-      var _order = this.getItems(day);
-      _order.total = total;
-
-      var index = _order.items.indexOf(item);
-      if(index != -1) {
-        _order.items.splice(index, 1);
-      }
-
-      this.items[day] = _order;
-    };
-
-    return Items;
-
-  })();
-
-  var Foodporn = (function() {
-
-    function Foodporn(options) {
-      this._setDefaults(options);
-
-      this.container = null;
-      this.items = null;
-      this.day = null;
-      this.sum = 0;
-
-      this.init();
-    }
-
-    Foodporn.prototype._setDefaults = function(options) {
-      var defaults;
-      if (options == null) {
-        options = {};
-      }
-
-      defaults = {
-        limit: 50,
-        container: '<div class="list-group"></div>',
-        style: {
-          position: 'fixed',
-          top: 20,
-          right: 20,
-          opacity: 0.75
-        }
-      };
-
-      this.options = $.extend(defaults, options);
-    };
-
-    Foodporn.prototype._notify = function() {
-      var message = $('<div><div>');
-      message.css(this.options.style);
-      message.text("Script loaded");
-      $('body').append(message)
-      message.fadeOut(3000);
-    };
-
-    Foodporn.prototype.init = function() {
-      this.container = $(this.options.container);
-      this.container.css(this.options.style);
-      $('body').append(this.container);
-
-      this.items = new Items();
-
-      this._notify();
-    };
-
-    Foodporn.prototype.round = function(value) {
-      return Number(value.toFixed(2));
-    };
-
-    Foodporn.prototype.calculate = function(element) {
-      try {
-        this.sum += Number(/([\d]*[\,\.]*[\d]*)$/.exec(element.value)[0].replace(',', '.'));
-      }
-      catch(e) {
-        console.log(e.message);
-      }
-    };
-
-    Foodporn.prototype.updateItems = function(element) {
-      if($(element).is(":checked")) {
-        this.items.push(this.day, element.value, this.sum);
-      }
-      else {
-        this.items.remove(this.day, element.value, this.sum);
-      }
-    };
-
-    Foodporn.prototype.getClass = function(total) {
-      return (total > this.options.limit) ? 'list-group-item-danger' : 'list-group-item-success';
-    };
-
-    Foodporn.prototype.getTotals = function(total) {
-      var left = this.options.limit - total;
-      return "<h4 class='totals'> Total: " + this.round(total) + ", Left: " + this.round(left) + "</h4>";
-    };
-
-    Foodporn.prototype.show = function() {
-      var self = this;
-      var items = this.items.getItems();
-      var element = '';
-
-      $.map(items, function(_order, day) {
-        element += "<a class='list-group-item " + self.getClass(_order.total) + "'><h4 class='list-group-item-heading'>" + day + "</h4>";
-
-        $(_order.items).each(function() {
-          element += "<p class='list-group-item-text'>" + this + "</p>";
-        });
-
-        element += self.getTotals(_order.total);
-        element += "</a>";
-      });
-
-      this.container.hide().empty().append(element).fadeIn("fast");
-    };
-
-    Foodporn.prototype.bind = function() {
-      var self = this;
-      $(".ss-form-question .ss-choice-item input").off("change").on("change", function() {
-        self.sum = 0;
-
-        var parent = $(this).parents(".ss-form-question");
-        self.day = $(parent).find(".ss-q-title").text();
-
-        $(parent).find(".ss-choice-item input:checked").each(function(){
-          self.calculate(this);
-        });
-
-        self.updateItems(this);
-        self.show();
-      });
-    };
-
-    return Foodporn;
-  })();
-
-
-  var f = new Foodporn();
-  f.bind();
-}, 500);
-
-
+  return this
+}(this)

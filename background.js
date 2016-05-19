@@ -24,12 +24,6 @@ chrome.runtime.onInstalled.addListener(function() {
 
 chrome.pageAction.onClicked.addListener(function(tab) {
   chrome.tabs.executeScript(null, {
-    file: "jquery.min.js"
-  });
-  chrome.tabs.executeScript(null, {
     file: "foodporn.js"
-  });
-  chrome.tabs.insertCSS(null, {
-    file: "bootstrap.min.css"
   });
 });

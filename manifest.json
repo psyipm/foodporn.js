@@ -1,10 +1,9 @@
 {
   "name": "foodporn.js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "calculates the sum of the order for catering",
   "background": {
-    "scripts": ["background.js", "jquery.min.js", "foodporn.js"],
-    "styles": ["bootstrap.min.css"],
+    "scripts": ["background.js", "foodporn.js"],
     "persistent": false
   },
   "page_action" :

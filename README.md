@@ -1,5 +1,5 @@
 ### Version
-0.1.0
+0.2.0
 
 ### Installation
 
@@ -9,13 +9,17 @@ install from chrome web store
 https://chrome.google.com/webstore/detail/foodpornjs/hibbdocgcnchjkmalhdddiacikhanndd?hl=en-US
 ```
 
-or go to 
+or go to
 ```sh
 chrome://extensions
 ```
 and drag and drop foodporn.js.crx to the page
 
 ### Changes
+
+version 0.2.0
+
+* works with new google forms (thanx to Izik)
 
 version 0.1.0
 
